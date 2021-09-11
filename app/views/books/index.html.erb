@@ -1,61 +1,54 @@
-<h1>Books</h1>
-
-<table>
-	<thead>
-		<tr>
-			<th>Title</th>
-			<th>Body</th>
-			<tr></tr>
-			<!--実装後の上記２行は仮-->
-			<td>リーダブルコード</td>
-        <td>より良いコードを書くためのシンプルで実践的なテクニック</td>
-        <td><a class="show" href="/books/show">show</a></td>
-        <td><a class="edit" href="/books/edit">edit</a></td>
-        <td><a data-confirm="Are you sure?" class="destroy"  data-method="delete" href="/books/:id(.:format)">Destroy</a></td>
-      </tr>
-      <tr>
-        <td>トラブル知らずのシステム設計</td>
-        <td>システム設計の要点を図解で説明してくれます</td>
-        <td><a class="show" href="/books/show">show</a></td>
-        <td><a class="edit" href="/books/edit">edit</a></td>
-        <td><a data-confirm="Are you sure?" class="destroy"  data-method="delete" href="/books">Destroy</a></td>
-		</tr>
-	</thead>
-	<tbody>
-		<% @books.each do |book| %>
-		<tr>
-			<td><%= book.title %></td>
-			<td><%= book.body %></td>
-			<td><%= link_to 'Show', book_path(book) %></td>
-			<td><%= link_to 'Edit', edit_book_path(book) %></td>
-			<td><%= link_to 'destroy', book_path(book), method: :delete,"data-confirm" => "Are you sure?" %></td>
-		</tr>
-		<% end %>
-	</tbody>
-</table>
-
-<h1>New Book</h1>
-<% if @book.errors.any? %>
-	<div class="error_explanatation">
-		<h4><%= @book.errors.count %> errors prohibited this book from being saved:</h4>
-
-		<ul>
-		<% @book.errors.full_messages.each do |msg| %>
-			<li><%= msg %></li>
-		<% end %>
-		</ul>
-	</div>
+<% if flash[:notice] %>
+  <p id = "notice">
+    <%= flash[:notice]%>
+  </p>
 <% end %>
-<%= form_for(@book, url: '/books') do |f| %>
-
-	<h4>Title</h4>
-	<%= f.text_field :title %>
-
-	<h4>Body</h4>
-	<%= f.text_area :body %>
-
-	<div>
-		<%= f.submit 'Create Book' %>
-	</div>
-
+<h1>Books</h1>
+<table>
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Body</th>
+      <th colspan = "3"></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @books.each do |book| %>
+      <tr>
+        <td><%= book.title %></td>
+        <td><%= book.body %></td>
+        <td><%= link_to "Show", book_path(book) %></td>
+        <td><%= link_to "Edit", edit_book_path(book) %></td>
+        <td><%= link_to "Destroy", book_path(book),method: :delete, "data-confirm" => "Are you sure?" %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<h2>New book</h2>
+<%= form_with model:@book, local:true do |f| %>
+  <% if @book.errors.any? %>
+    <div class="error_explantation">
+      <div class="error_title">
+        <h2>2 errors prohibited this book from being saved:</h2>
+      </div>
+      <div class="error_content">
+        <ul>
+          <% @book.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    </div>
+  <% end %>
+  <div class="actions">
+    <label for="book_title">Title</label>
+    <%= f.text_field :title, class: "book_title" %>
+  </div>
+  <div class="actions">
+    <label for="book_body">Body</label>
+    <%= f.text_area :body, class: "book_body" %>
+  </div>
+  <div class="actions">
+    <%= f.submit "Create Book" %>
+  </div>
 <% end %>
